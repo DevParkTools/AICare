@@ -1,279 +1,343 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f4f6fb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>AI CARE · 스마트 돌봄</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>곁에 – 노인 돌봄 AI 프로토타입</title>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#f4f6fb;--card:#fff;--soft:#f7f8fc;--text:#172033;--muted:#788397;--line:#e7eaf0;--primary:#4f46e5;--primary-soft:#eef2ff;--green:#16a34a;--green-soft:#ecfdf3;--orange:#ea580c;--orange-soft:#fff7ed;--red:#dc2626;--red-soft:#fef2f2;--shadow:0 10px 30px rgba(27,39,65,.06)}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;letter-spacing:-.2px}
-button,input{font:inherit}
-button{border:0;cursor:pointer}
-.app{min-height:100vh}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:248px;background:#fff;border-right:1px solid var(--line);padding:25px 17px;z-index:20}
-.logo{font-size:22px;font-weight:900;padding:0 12px 25px}.logo span{color:var(--primary)}
-.user-mini{display:flex;align-items:center;gap:10px;background:var(--soft);padding:12px;border-radius:15px;margin-bottom:22px}.avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#ddd6fe,#eef2ff);display:grid;place-items:center;font-size:22px}.user-mini b{font-size:13px;display:block}.user-mini small{font-size:10px;color:var(--muted)}
-.nav{display:grid;gap:5px}.nav button{background:transparent;text-align:left;padding:13px 14px;border-radius:12px;color:#687487;font-weight:700}.nav button.active,.nav button:hover{background:var(--primary-soft);color:var(--primary)}
-.sidebar-foot{position:absolute;left:17px;right:17px;bottom:22px;background:var(--green-soft);padding:13px;border-radius:13px;font-size:11px;color:#166534}
-.main{margin-left:248px;padding:28px 34px 60px;max-width:1540px}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.title h1{font-size:27px;margin:0 0 5px;letter-spacing:-1px}.title p{margin:0;color:var(--muted);font-size:12px}
-.top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border:1px solid var(--line);background:#fff;border-radius:13px;position:relative}.dot{position:absolute;width:7px;height:7px;background:#ef4444;border-radius:50%;right:8px;top:8px}
-.overview{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:21px;box-shadow:var(--shadow)}
-.hero{min-height:245px;background:linear-gradient(135deg,#eef2ff,#fff);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-100px;top:-110px;background:rgba(99,102,241,.07)}
-.hero-head,.hero-foot{display:flex;justify-content:space-between;position:relative;z-index:1}.hero h2{font-size:22px;line-height:1.4;margin:5px 0}.hero p{font-size:12px;color:var(--muted);margin:0}.status{height:32px;background:var(--green-soft);color:var(--green);border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800}.status i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:5px}.hero-foot{align-items:end;margin-top:37px}.big-avatar{width:82px;height:82px;border-radius:24px;background:linear-gradient(145deg,#ddd6fe,#f1f5ff);display:grid;place-items:center;font-size:43px}.stats{display:flex;gap:28px}.stats b{font-size:21px}.stats span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
-.ai-card h3,.card-title h3{margin:0;font-size:15px}.card-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.card-title span{font-size:10px;color:var(--muted)}
-.ai-box{background:linear-gradient(135deg,#f8f9ff,#f5f7ff);border:1px solid #e9eaff;padding:15px;border-radius:15px;font-size:12px;line-height:1.7}.ai-label{font-size:10px;font-weight:900;color:var(--primary);margin-bottom:5px}
-.ai-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.tag{font-size:10px;padding:6px 8px;border-radius:8px;background:#fff;border:1px solid var(--line);color:#626d80}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:18px}.metric{background:#fff;border:1px solid var(--line);padding:16px;border-radius:16px;box-shadow:var(--shadow)}.metric-icon{font-size:19px;margin-bottom:12px}.metric b{font-size:19px}.metric small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.progress{height:5px;background:#edf0f5;border-radius:9px;margin-top:11px;overflow:hidden}.progress i{display:block;height:100%;background:var(--primary);border-radius:9px}
-.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.action{background:var(--soft);border-radius:13px;text-align:left;padding:14px;min-height:76px}.action:active{transform:scale(.98)}.action b{display:block;font-size:12px;margin-bottom:5px}.action span{font-size:10px;color:var(--muted)}
-.reminders{display:grid;gap:9px}.reminder{display:flex;align-items:center;gap:10px;padding:11px;background:var(--soft);border-radius:12px}.reminder-icon{font-size:18px}.reminder-text{min-width:0;flex:1}.reminder-text b{font-size:11px}.reminder-text small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.pill{font-size:9px;font-weight:800;padding:6px 8px;border-radius:8px;background:var(--orange-soft);color:var(--orange)}.pill.done{background:var(--green-soft);color:var(--green)}
-.timeline{display:grid;gap:14px}.event{display:grid;grid-template-columns:45px 12px 1fr;gap:8px}.event-time{font-size:10px;color:var(--muted);padding-top:2px}.event-dot{position:relative}.event-dot:before{content:"";display:block;width:8px;height:8px;border-radius:50%;background:#c7d2fe;margin-top:3px}.event-dot:after{content:"";position:absolute;width:1px;background:#e6e9f2;top:14px;bottom:-16px;left:3.5px}.event:last-child .event-dot:after{display:none}.event b{font-size:11px}.event p{margin:3px 0 0;font-size:10px;color:var(--muted)}
-.chart{height:170px;display:flex;align-items:end;gap:10px;padding:8px 5px 0}.bar-col{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:6px}.bar{width:100%;max-width:32px;background:linear-gradient(180deg,#818cf8,#c7d2fe);border-radius:7px 7px 3px 3px;min-height:12px}.bar-col span{font-size:9px;color:var(--muted)}
-.health-list{display:grid;gap:9px}.health-row{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:var(--soft);border-radius:11px}.health-row b{font-size:11px}.health-row span{font-size:10px;color:var(--muted)}.good{color:var(--green)!important}.warn{color:var(--orange)!important}
-.alert-card{margin-top:18px}.alert{display:flex;gap:12px;align-items:center;background:var(--orange-soft);border:1px solid #fed7aa;border-radius:14px;padding:13px}.alert strong{font-size:11px}.alert p{margin:3px 0 0;color:#9a3412;font-size:10px;line-height:1.5}
-.facility{margin-top:18px}.people{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.person{padding:13px;background:var(--soft);border-radius:14px;cursor:pointer}.person-top{display:flex;align-items:center;gap:8px}.person .avatar{width:35px;height:35px;font-size:18px}.person b{font-size:11px}.person small{font-size:9px;color:var(--muted)}.person-status{font-size:9px;font-weight:800;margin-top:10px}.green{color:var(--green)}.orange{color:var(--orange)}.red{color:var(--red)}
-.bottom-nav{display:none}
-.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:100;align-items:center;justify-content:center;padding:16px}.modal.open{display:flex}.modal-box{width:min(520px,100%);max-height:min(760px,92vh);overflow:auto;background:#fff;border-radius:22px;padding:21px;box-shadow:0 30px 80px rgba(0,0,0,.2)}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h3{margin:0;font-size:17px}.close{width:35px;height:35px;border-radius:10px;background:#f0f2f6}.chat{height:350px;overflow:auto;background:#f7f8fc;border-radius:15px;margin:15px 0;padding:13px;display:flex;flex-direction:column;gap:9px}.msg{max-width:82%;padding:10px 12px;border-radius:14px;font-size:11px;line-height:1.6}.bot{align-self:flex-start;background:#fff;border:1px solid var(--line)}.me{align-self:flex-end;background:var(--primary);color:#fff}.chat-input{display:flex;gap:7px}.chat-input input{flex:1;min-width:0;border:1px solid var(--line);border-radius:11px;padding:12px;outline:none}.send{background:var(--primary);color:#fff;padding:0 15px;border-radius:11px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-box{background:var(--soft);border-radius:13px;padding:13px}.form-box label{display:block;color:var(--muted);font-size:10px;margin-bottom:7px}.form-box input,.form-box select{width:100%;border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px;outline:none;font-size:12px}.save-btn{width:100%;margin-top:13px;background:var(--primary);color:#fff;border-radius:11px;padding:12px;font-weight:700}
-.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);background:#18212f;color:#fff;border-radius:11px;padding:11px 15px;font-size:11px;opacity:0;pointer-events:none;transition:.25s;z-index:200;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1050px){.overview{grid-template-columns:1fr}.section-grid{grid-template-columns:1fr}.people{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){
-body{padding-bottom:68px}.sidebar{display:none}.main{margin:0;padding:18px 14px 25px;width:100%}.topbar{margin-bottom:17px}.title h1{font-size:22px}.title p{font-size:10px}.top-actions .icon-btn:first-child{display:none}.icon-btn{width:39px;height:39px}.card{padding:16px;border-radius:17px}.hero{min-height:235px}.hero h2{font-size:18px}.hero-foot{margin-top:31px}.big-avatar{width:70px;height:70px;font-size:37px;border-radius:21px}.stats{gap:15px}.stats b{font-size:17px}.stats span{font-size:9px}.metrics{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.metric{padding:13px;border-radius:14px}.metric-icon{margin-bottom:9px}.metric b{font-size:17px}.section-grid{gap:10px;margin-top:10px}.actions{gap:7px}.action{min-height:72px;padding:12px}.people{grid-template-columns:1fr 1fr}.chart{height:145px;gap:7px}.bar{max-width:25px}.bottom-nav{display:flex;position:fixed;left:0;right:0;bottom:0;height:68px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line);z-index:50;padding-bottom:env(safe-area-inset-bottom);justify-content:space-around}.bottom-nav button{background:transparent;color:#8992a3;font-size:9px;padding:6px 10px;min-width:55px}.bottom-nav button.active{color:var(--primary);font-weight:800}.bottom-nav div{font-size:18px;line-height:25px}.modal{align-items:flex-end;padding:0}.modal-box{width:100%;max-height:92vh;border-radius:22px 22px 0 0;padding:18px}.chat{height:48vh}.form-grid{grid-template-columns:1fr}.toast{bottom:82px;max-width:calc(100% - 30px);overflow:hidden;text-overflow:ellipsis}}
-@media(max-width:380px){.main{padding-left:10px;padding-right:10px}.stats{gap:9px}.hero h2{font-size:17px}.metric{padding:11px}.action{padding:10px}}
+:root{--bg:#f2f5f7;--card:#fff;--ink:#1b2a33;--sub:#5d6e79;--main:#17506b;--main-soft:#dcebf2;--amber:#f2b134;--ok:#2e8b57;--sos:#c62f2f;--line:#d8e0e5}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:18px;line-height:1.5}
+#app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px}
+header b{font-size:20px;color:var(--main)}
+.seg{display:flex;background:#e3eaee;border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:8px 16px;border-radius:999px;font:inherit;font-size:15px;color:var(--sub);position:relative}
+.seg button.on{background:var(--main);color:#fff}
+.badge{position:absolute;top:-4px;right:-2px;background:var(--sos);color:#fff;font-size:11px;min-width:18px;height:18px;line-height:18px;border-radius:9px;text-align:center}
+main{flex:1;overflow-y:auto;padding:8px 16px 16px;display:flex;flex-direction:column;gap:12px}
+nav{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:10px 0 8px;font:inherit;font-size:14px;color:var(--sub)}
+nav button span{display:block;font-size:24px}
+nav button.on{color:var(--main);font-weight:700}
+.card{background:var(--card);border-radius:18px;padding:16px;border:1px solid var(--line)}
+.card h3{margin:0 0 8px;font-size:17px}
+.hello{font-size:30px;font-weight:800;line-height:1.25;margin:4px 0 0}
+.date{color:var(--sub);font-size:17px}
+.banner{background:var(--amber);color:#3b2a00;border-radius:14px;padding:14px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.banner button{border:0;background:#3b2a00;color:#fff;border-radius:10px;padding:8px 14px;font:inherit;font-size:15px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:18px;font:inherit;font-size:20px;font-weight:700;background:var(--main);color:#fff;text-align:center;text-decoration:none}
+.btn.alt{background:var(--main-soft);color:var(--main)}
+.btn.sos{background:var(--sos)}
+.btn.sm{padding:10px 14px;font-size:16px;border-radius:12px;width:auto;display:inline-block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 8px;border:1px solid var(--line);background:var(--card);border-radius:18px;font:inherit;font-size:20px;font-weight:700;color:var(--ink)}
+.big span{font-size:38px}
+.moods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.moods button{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:10px 0;font:inherit;font-size:14px;color:var(--ink)}
+.moods button span{display:block;font-size:34px}
+.moods button.on{border-color:var(--main);background:var(--main-soft)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row small{color:var(--sub);display:block;font-size:14px}
+.done{color:var(--ok);font-weight:700}
+.sos-fab{margin-top:auto}
+#log{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.msg{max-width:85%;padding:12px 16px;border-radius:18px;font-size:19px;white-space:pre-wrap}
+.msg.a{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.u{background:var(--main);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bar{display:flex;gap:8px;padding-top:8px}
+.bar input{flex:1;min-width:0;font:inherit;font-size:19px;padding:14px;border-radius:14px;border:2px solid var(--line)}
+.bar button{border:0;border-radius:14px;padding:0 16px;font:inherit;font-size:17px;background:var(--main);color:#fff}
+.bar button.mic{background:var(--main-soft);color:var(--main);font-size:24px}
+.bar button.rec{background:var(--sos);color:#fff}
+.alert{padding:10px 12px;border-radius:12px;margin-bottom:8px;border-left:6px solid var(--amber);background:#fff8e6;font-size:16px}
+.alert.emergency{border-color:var(--sos);background:#fdecec}
+.alert.read{opacity:.55}
+.alert small{color:var(--sub);display:block}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stat div{background:var(--main-soft);border-radius:14px;padding:12px 4px}
+.stat b{display:block;font-size:22px;color:var(--main)}
+.stat small{color:var(--sub);font-size:13px}
+label{display:block;font-size:15px;color:var(--sub);margin:10px 0 4px}
+input,select{font:inherit;font-size:17px}
+.f{width:100%;padding:12px;border-radius:12px;border:2px solid var(--line)}
+.sheet{position:fixed;inset:0;background:rgba(10,20,26,.6);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.box{background:var(--card);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+.box h2{margin:0;font-size:24px}
+.note{color:var(--sub);font-size:14px}
+.seg button{padding:8px 12px}
+.chips{display:flex;gap:8px;overflow-x:auto;flex:none}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;color:var(--sub);white-space:nowrap}
+.chips button.on{background:var(--main);color:#fff;border-color:var(--main)}
+.lrow{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:12px 0;border-bottom:1px solid var(--line);font:inherit;text-align:left;color:var(--ink)}
+.lrow:last-child{border:0}
+.lrow small{display:block;color:var(--sub);font-size:14px}
+.grow{flex:1}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.chev{color:var(--sub);font-size:24px}
+.chip{display:inline-block;border-radius:999px;padding:2px 12px;font-size:14px;font-weight:700}
+.bars{display:flex;gap:8px;height:140px}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.bars i{display:block;width:100%;background:var(--main);border-radius:6px 6px 0 0}
+.bars small{color:var(--sub);font-size:13px;height:18px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
 </style>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-<div class="logo">AI <span>CARE</span></div>
-<div class="user-mini"><div class="avatar">👵</div><div><b>김영순 어르신</b><small>78세 · 보호자 모드</small></div></div>
-<nav class="nav">
-<button class="active">⌂　대시보드</button>
-<button onclick="openChat()">◉　AI 말벗</button>
-<button onclick="openHealth()">♡　건강 관리</button>
-<button onclick="openSchedule()">□　돌봄 일정</button>
-<button onclick="openRecords()">◌　돌봄 기록</button>
-<button onclick="openSettings()">⚙　설정</button>
-</nav>
-<div class="sidebar-foot">● 시스템 정상<br><span>오늘 AI 돌봄 분석 6회 완료</span></div>
-</aside>
-
-<main class="main">
-<div class="topbar">
-<div class="title"><h1>오늘의 돌봄 현황</h1><p>2026년 10월 8일 · 목요일 · 마지막 업데이트 10:07</p></div>
-<div class="top-actions"><button class="icon-btn" onclick="openAlerts()">🔔<i class="dot"></i></button><button class="icon-btn" onclick="openChat()">💬</button></div>
-</div>
-
-<section class="overview">
-<div>
-<div class="card hero">
-<div class="hero-head"><div><p>좋은 아침이에요</p><h2>김영순 어르신의 상태는<br>오늘 <strong>안정적</strong>입니다.</h2></div><div class="status"><i></i> 안정</div></div>
-<div class="hero-foot"><div class="big-avatar">👵</div><div class="stats"><div><b>2/3</b><span>식사</span></div><div><b>850</b><span>수분 ml</span></div><div><b>42</b><span>활동 분</span></div></div></div>
-</div>
-<div class="metrics">
-<div class="metric"><div class="metric-icon">🍚</div><b id="mealCount">2/3</b><small>오늘 식사</small><div class="progress"><i style="width:66%"></i></div></div>
-<div class="metric"><div class="metric-icon">💧</div><b>850ml</b><small>수분 섭취</small><div class="progress"><i style="width:57%"></i></div></div>
-<div class="metric"><div class="metric-icon">💊</div><b id="medCount">2/3</b><small>복약 관리</small><div class="progress"><i id="medProgress" style="width:66%"></i></div></div>
-<div class="metric"><div class="metric-icon">🚶</div><b>42분</b><small>활동 시간</small><div class="progress"><i style="width:70%"></i></div></div>
-</div>
-</div>
-
-<div class="card ai-card">
-<div class="card-title"><h3>AI 돌봄 분석</h3><span>방금 업데이트</span></div>
-<div class="ai-box"><div class="ai-label">✦ AI INSIGHT</div>최근 3일간 <strong>오후 활동량이 평소보다 18% 감소</strong>했습니다. 오늘은 무리가 없는 가벼운 산책이나 실내 활동을 권장합니다.</div>
-<div class="ai-tags"><span class="tag">활동량 ↓ 18%</span><span class="tag">수면 양호</span><span class="tag">식사 관찰</span></div>
-<div style="height:16px"></div>
-<div class="card-title"><h3>빠른 돌봄</h3></div>
-<div class="actions">
-<button class="action" onclick="openChat()"><b>💬 AI 말벗</b><span>오늘의 대화 시작</span></button>
-<button class="action" onclick="completeMedication()"><b>💊 복약 확인</b><span>오후 1시 약</span></button>
-<button class="action" onclick="recordMeal()"><b>🍚 식사 기록</b><span>점심 식사 완료</span></button>
-<button class="action" onclick="sendAlert()"><b>📣 보호자 알림</b><span>상태 공유하기</span></button>
-</div>
-</div>
-</section>
-
-<section class="section-grid">
-<div class="card">
-<div class="card-title"><h3>오늘의 일정</h3><button onclick="openSchedule()" style="background:none;color:var(--primary);font-size:10px">전체 보기</button></div>
-<div class="timeline">
-<div class="event"><div class="event-time">09:00</div><div class="event-dot"></div><div><b>아침 식사</b><p>식사 완료 · 평소와 비슷한 양</p></div></div>
-<div class="event"><div class="event-time">10:30</div><div class="event-dot"></div><div><b>가벼운 산책</b><p>20분 · 활동 상태 양호</p></div></div>
-<div class="event"><div class="event-time">13:00</div><div class="event-dot"></div><div><b>점심 약 복용</b><p>아직 확인되지 않았습니다.</p></div></div>
-<div class="event"><div class="event-time">15:00</div><div class="event-dot"></div><div><b>AI 말벗 시간</b><p>오늘의 안부 대화 · 10분 권장</p></div></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title"><h3>건강 지표</h3><button onclick="openHealth()" style="background:none;color:var(--primary);font-size:10px">상세 보기</button></div>
-<div class="health-list">
-<div class="health-row"><b>수면</b><span class="good">● 양호 · 7시간 12분</span></div>
-<div class="health-row"><b>혈압</b><span class="good">● 124 / 78 mmHg</span></div>
-<div class="health-row"><b>체온</b><span class="good">● 36.5℃</span></div>
-<div class="health-row"><b>기분</b><span class="warn">● 보통 · 대화 권장</span></div>
-</div>
-</div>
-</section>
-
-<section class="section-grid">
-<div class="card">
-<div class="card-title"><h3>주간 활동량</h3><span>최근 7일</span></div>
-<div class="chart">
-<div class="bar-col"><div class="bar" style="height:55%"></div><span>금</span></div>
-<div class="bar-col"><div class="bar" style="height:72%"></div><span>토</span></div>
-<div class="bar-col"><div class="bar" style="height:66%"></div><span>일</span></div>
-<div class="bar-col"><div class="bar" style="height:83%"></div><span>월</span></div>
-<div class="bar-col"><div class="bar" style="height:74%"></div><span>화</span></div>
-<div class="bar-col"><div class="bar" style="height:61%"></div><span>수</span></div>
-<div class="bar-col"><div class="bar" style="height:48%"></div><span>오늘</span></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title"><h3>복약 & 돌봄 알림</h3><span>오늘</span></div>
-<div class="reminders">
-<div class="reminder"><div class="reminder-icon">💊</div><div class="reminder-text"><b>점심 약 복용</b><small>오후 1시 · 확인 필요</small></div><button class="pill" id="medButton" onclick="completeMedication()">확인</button></div>
-<div class="reminder"><div class="reminder-icon">💧</div><div class="reminder-text"><b>수분 섭취</b><small>목표 1,500ml · 현재 850ml</small></div><span class="pill done">진행 중</span></div>
-<div class="reminder"><div class="reminder-icon">🚶</div><div class="reminder-text"><b>오후 활동</b><small>가벼운 산책 권장</small></div><span class="pill done">권장</span></div>
-</div>
-</div>
-</section>
-
-<section class="card alert-card">
-<div class="alert"><div style="font-size:21px">⚠️</div><div><strong>AI가 관찰한 변화</strong><p>최근 3일 동안 식사량과 오후 활동량이 조금씩 감소하고 있습니다. 지속될 경우 보호자 또는 돌봄 담당자의 확인을 권장합니다.</p></div></div>
-</section>
-
-<section class="card facility">
-<div class="card-title"><h3>돌봄 대상자</h3><span>총 4명 · 시설 모드</span></div>
-<div class="people">
-<div class="person" onclick="selectPerson('김영순')"><div class="person-top"><div class="avatar">👵</div><div><b>김영순</b><small>78세</small></div></div><div class="person-status green">● 안정</div></div>
-<div class="person" onclick="selectPerson('이철수')"><div class="person-top"><div class="avatar">👴</div><div><b>이철수</b><small>82세</small></div></div><div class="person-status orange">● 확인 필요</div></div>
-<div class="person" onclick="selectPerson('박정희')"><div class="person-top"><div class="avatar">👵</div><div><b>박정희</b><small>80세</small></div></div><div class="person-status orange">● 관찰</div></div>
-<div class="person" onclick="selectPerson('최영호')"><div class="person-top"><div class="avatar">👴</div><div><b>최영호</b><small>76세</small></div></div><div class="person-status green">● 안정</div></div>
-</div>
-</section>
-</main>
-</div>
-
-<nav class="bottom-nav">
-<button class="active"><div>⌂</div>홈</button>
-<button onclick="openChat()"><div>💬</div>AI 말벗</button>
-<button onclick="openHealth()"><div>♡</div>건강</button>
-<button onclick="openSchedule()"><div>□</div>일정</button>
-<button onclick="openRecords()"><div>◌</div>기록</button>
-</nav>
-
-<div class="modal" id="chatModal" onclick="if(event.target===this)closeModal('chatModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>AI 말벗</h3><button class="close" onclick="closeModal('chatModal')">×</button></div>
-<div class="chat" id="chat"><div class="msg bot">안녕하세요, 영순 어르신. 오늘 아침은 잘 드셨어요? 😊</div><div class="msg bot">오늘 기분은 어떠세요?</div></div>
-<div class="chat-input"><input id="chatInput" placeholder="편하게 이야기해 주세요" onkeydown="if(event.key==='Enter')sendMessage()"><button class="send" onclick="sendMessage()">전송</button></div>
-</div>
-</div>
-
-<div class="modal" id="healthModal" onclick="if(event.target===this)closeModal('healthModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>건강 관리</h3><button class="close" onclick="closeModal('healthModal')">×</button></div>
-<div class="health-list" style="margin-top:18px">
-<div class="health-row"><b>혈압</b><span>124 / 78 mmHg</span></div>
-<div class="health-row"><b>심박수</b><span>72 bpm</span></div>
-<div class="health-row"><b>체온</b><span>36.5℃</span></div>
-<div class="health-row"><b>수면</b><span>7시간 12분 · 양호</span></div>
-<div class="health-row"><b>오늘 활동</b><span>42분 · 목표 60분</span></div>
-<div class="health-row"><b>기분</b><span>보통 · AI 대화 권장</span></div>
-</div>
-<button class="save-btn" onclick="showToast('건강 기록을 저장했습니다.');closeModal('healthModal')">건강 기록 저장</button>
-</div>
-</div>
-
-<div class="modal" id="scheduleModal" onclick="if(event.target===this)closeModal('scheduleModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>돌봄 일정</h3><button class="close" onclick="closeModal('scheduleModal')">×</button></div>
-<div style="margin-top:17px" class="timeline">
-<div class="event"><div class="event-time">09:00</div><div class="event-dot"></div><div><b>아침 식사</b><p>완료</p></div></div>
-<div class="event"><div class="event-time">10:30</div><div class="event-dot"></div><div><b>산책</b><p>20분 완료</p></div></div>
-<div class="event"><div class="event-time">13:00</div><div class="event-dot"></div><div><b>점심 약</b><p>복용 확인 필요</p></div></div>
-<div class="event"><div class="event-time">15:00</div><div class="event-dot"></div><div><b>AI 말벗</b><p>10분 권장</p></div></div>
-<div class="event"><div class="event-time">18:00</div><div class="event-dot"></div><div><b>저녁 식사</b><p>예정</p></div></div>
-</div>
-<button class="save-btn" onclick="addSchedule()">+ 일정 추가</button>
-</div>
-</div>
-
-<div class="modal" id="recordsModal" onclick="if(event.target===this)closeModal('recordsModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>돌봄 기록</h3><button class="close" onclick="closeModal('recordsModal')">×</button></div>
-<div class="form-grid" style="margin-top:18px">
-<div class="form-box"><label>기록 유형</label><select><option>컨디션</option><option>식사</option><option>수분</option><option>활동</option><option>기타</option></select></div>
-<div class="form-box"><label>상태</label><select><option>양호</option><option>보통</option><option>관찰 필요</option></select></div>
-</div>
-<div class="form-box" style="margin-top:10px"><label>메모</label><input id="recordMemo" placeholder="오늘의 특이사항을 입력하세요"></div>
-<button class="save-btn" onclick="saveRecord()">기록 저장</button>
-<div style="margin-top:16px;background:var(--soft);border-radius:13px;padding:13px;font-size:10px;color:var(--muted)">10:05 · 아침 식사 정상<br><br>09:42 · 산책 20분 완료<br><br>09:00 · 수면 상태 양호</div>
-</div>
-</div>
-
-<div class="modal" id="alertsModal" onclick="if(event.target===this)closeModal('alertsModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>알림 센터</h3><button class="close" onclick="closeModal('alertsModal')">×</button></div>
-<div class="reminders" style="margin-top:18px">
-<div class="reminder"><div class="reminder-icon">⚠️</div><div class="reminder-text"><b>오후 활동량 감소</b><small>AI가 최근 3일 추세를 감지했습니다.</small></div></div>
-<div class="reminder"><div class="reminder-icon">💊</div><div class="reminder-text"><b>점심 약 복용 확인</b><small>오후 1시 복약 일정이 있습니다.</small></div></div>
-<div class="reminder"><div class="reminder-icon">💬</div><div class="reminder-text"><b>AI 말벗 권장</b><small>오늘 대화 시간이 아직 없습니다.</small></div></div>
-</div>
-</div>
-</div>
-
-<div class="modal" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
-<div class="modal-box">
-<div class="modal-head"><h3>설정</h3><button class="close" onclick="closeModal('settingsModal')">×</button></div>
-<div class="health-list" style="margin-top:18px">
-<div class="health-row"><b>보호자 알림</b><button class="pill done" onclick="toggleSetting(this)">ON</button></div>
-<div class="health-row"><b>복약 알림</b><button class="pill done" onclick="toggleSetting(this)">ON</button></div>
-<div class="health-row"><b>AI 활동 분석</b><button class="pill done" onclick="toggleSetting(this)">ON</button></div>
-<div class="health-row"><b>야간 알림</b><button class="pill" onclick="toggleSetting(this)">OFF</button></div>
-</div>
-</div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="app"></div>
 <script>
-const toast=document.getElementById('toast');
-let toastTimer;
-function showToast(message){clearTimeout(toastTimer);toast.textContent=message;toast.classList.add('show');toastTimer=setTimeout(()=>toast.classList.remove('show'),2300)}
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-function openChat(){openModal('chatModal');setTimeout(()=>document.getElementById('chatInput').focus(),120)}
-function openHealth(){openModal('healthModal')}
-function openSchedule(){openModal('scheduleModal')}
-function openRecords(){openModal('recordsModal')}
-function openAlerts(){openModal('alertsModal')}
-function openSettings(){openModal('settingsModal')}
-function completeMedication(){document.getElementById('medCount').textContent='3/3';document.getElementById('medProgress').style.width='100%';const b=document.getElementById('medButton');b.textContent='완료';b.classList.add('done');showToast('점심 약 복용이 기록되었습니다.')}
-function recordMeal(){document.getElementById('mealCount').textContent='3/3';showToast('점심 식사 기록이 저장되었습니다.')}
-function sendAlert(){showToast('보호자에게 현재 돌봄 상태를 공유했습니다.')}
-function addSchedule(){showToast('새 돌봄 일정 추가 기능을 준비했습니다.')}
-function saveRecord(){const memo=document.getElementById('recordMemo').value.trim();showToast(memo?'돌봄 기록이 저장되었습니다.':'돌봄 기록을 저장했습니다.');document.getElementById('recordMemo').value=''}
-function toggleSetting(el){const on=el.textContent==='ON';el.textContent=on?'OFF':'ON';el.className=on?'pill':'pill done';showToast((on?'설정이 꺼졌습니다.':'설정이 켜졌습니다.'))}
-function selectPerson(name){showToast(name+' 어르신의 상태를 선택했습니다.')}
-function sendMessage(){
-const input=document.getElementById('chatInput'), chat=document.getElementById('chat'), value=input.value.trim();
-if(!value)return;
-const me=document.createElement('div');me.className='msg me';me.textContent=value;chat.appendChild(me);input.value='';chat.scrollTop=chat.scrollHeight;
-setTimeout(()=>{
-let reply='그렇군요. 말씀해 주셔서 고마워요. 오늘도 편안한 하루를 보내세요. 😊';
-if(/아파|통증|아프|힘들/.test(value))reply='많이 불편하셨군요. 어떤 부분이 불편한지 보호자에게 알려드릴 수 있어요. 증상이 심하거나 갑자기 나타났다면 의료진의 도움을 받는 것이 좋습니다.';
-else if(/기분|좋아|괜찮/.test(value))reply='다행이에요. 오늘 기분이 조금 더 좋아지도록 제가 옆에서 이야기 나눠드릴게요.';
-else if(/밥|식사|먹/.test(value))reply='식사는 건강을 위해 중요해요. 오늘도 천천히 맛있게 드세요.';
-else if(/외로|심심|혼자/.test(value))reply='제가 여기 있어요. 오늘 있었던 일이나 좋아하는 이야기를 편하게 들려주세요.';
-const bot=document.createElement('div');bot.className='msg bot';bot.textContent=reply;chat.appendChild(bot);chat.scrollTop=chat.scrollHeight;
-},500)
+/* ============================================================
+   구조 (Flutter 이전 시 대응)
+   Store   → Provider/Riverpod + SharedPreferences(Hive)
+   Alerts  → FCM 푸시 / 서버 알림
+   AI      → 서버 경유 LLM API 호출
+   Voice   → speech_to_text / flutter_tts
+   Screens → Widget (Home, Chat, Meds, Dash, Settings)
+   Tick    → 로컬 알림(flutter_local_notifications) + 서버 스케줄러
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ld=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const hm=ts=>new Date(ts).toTimeString().slice(0,5);
+const ago=ts=>{const m=Math.round((Date.now()-ts)/6e4);if(m<1)return'방금';if(m<60)return m+'분 전';const h=Math.floor(m/60);return h<24?h+'시간 전':Math.floor(h/24)+'일 전'};
+
+/* ---------- Store ---------- */
+const Store={
+  key:'gyeote-v1',s:null,
+  load(){
+    try{this.s=JSON.parse(localStorage.getItem(this.key))}catch(e){}
+    if(!this.s)this.s={
+      seniorName:'어르신',guardianPhone:'',inactiveHours:6,tts:true,
+      meds:[{id:1,name:'혈압약',time:'08:00'},{id:2,name:'저녁 약',time:'19:00'}],
+      taken:{},moods:{},chat:[],alerts:[],flags:{},lastActive:Date.now()};
+    if(!this.s.seeded){this.s.seeded=1;[1,2,3,4,5,6].forEach(i=>{const k=dkey(Date.now()-i*864e5);if(!this.s.taken[k]){this.s.taken[k]={};this.s.meds.forEach((m,x)=>{if((i+x)%4)this.s.taken[k][m.id]=m.time})}})} // 예시 이력
+  },
+  save(){try{localStorage.setItem(this.key,JSON.stringify(this.s))}catch(e){}}
+};
+
+/* ---------- Alerts (어르신 → 보호자) ---------- */
+const Alerts={
+  push(type,text){Store.s.alerts.unshift({id:Date.now()+Math.random(),type,text,ts:Date.now(),read:false});Store.save()}
+};
+
+/* ---------- AI (지금은 규칙 기반, 나중에 LLM 호출로 교체) ---------- */
+const EMERGENCY=/아프|아파|넘어|쓰러|숨이|숨쉬|가슴|어지러|피가|도와|살려/;
+const AI={
+  isEmergency:t=>EMERGENCY.test(t),
+  n:0,
+  async reply(text){ // TODO: fetch('/api/chat',{...}) 로 교체. 응급 판정은 서버 응답과 상관없이 앱에서 먼저 처리.
+    if(this.isEmergency(text))return'많이 불편하시군요. 지금 바로 보호자분께 알렸어요. 위급하시면 아래 119 버튼을 눌러 주세요.';
+    if(/약/.test(text))return'약은 시간 맞춰 드시는 게 중요해요. "약" 화면에서 드셨는지 눌러 주시면 보호자분께도 전해져요.';
+    if(/외로|심심|쓸쓸/.test(text))return'적적하셨군요. 저랑 이야기 나눠요. 오늘은 어떤 하루였는지 들려주시겠어요?';
+    if(/밥|식사|먹었/.test(text))return'식사는 하셨어요? 드신 걸 말씀해 주시면 좋아요.';
+    if(/잠|못 잤|불면/.test(text))return'잠을 설치셨군요. 낮에 잠깐 햇볕을 쬐면 도움이 돼요. 오늘 몸은 어떠세요?';
+    if(/고마|감사/.test(text))return'별말씀을요. 언제든 말 걸어 주세요.';
+    const d=['그렇군요. 조금 더 이야기해 주세요.','네, 듣고 있어요. 그다음엔 어떻게 되셨어요?','말씀해 주셔서 고마워요. 오늘 기분은 어떠세요?'];
+    return d[this.n++%d.length];
+  }
+};
+
+/* ---------- Voice ---------- */
+const Voice={
+  speak(t){if(!Store.s.tts)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=.85;speechSynthesis.speak(u)}catch(e){}},
+  listen(onText,onEnd){
+    const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!R)return false;
+    try{const r=new R();r.lang='ko-KR';r.onresult=e=>onText(e.results[0][0].transcript);r.onend=onEnd;r.onerror=onEnd;r.start();return true}catch(e){return false}
+  }
+};
+
+/* ---------- UI state ---------- */
+const UI={route:'s.home',banner:'',sheet:'',rec:false,sel:1,flt:'all'};
+const touch=()=>{Store.s.lastActive=Date.now();Store.save()};
+const MOODS=[['😄','좋아요',3],['🙂','괜찮아요',2],['😐','그저 그래요',1],['😢','안 좋아요',0]];
+const todayTaken=()=>Store.s.taken[ld()]||{};
+const todayMoods=()=>Store.s.moods[ld()]||[];
+
+/* ---------- Screens ---------- */
+function Home(){
+  const S=Store.s,h=new Date().getHours(),t=todayTaken();
+  const greet=h<12?'좋은 아침이에요':h<18?'안녕하세요':'편안한 저녁이에요';
+  const next=S.meds.filter(m=>!t[m.id]).sort((a,b)=>a.time.localeCompare(b.time))[0];
+  const lastMood=todayMoods().slice(-1)[0];
+  return`<div><div class="date">${new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'})}</div>
+  <p class="hello">${greet},<br>${esc(S.seniorName)}</p></div>
+  <div class="card"><h3>오늘의 약</h3>${next?`<div class="row"><div><b>${esc(next.name)}</b><small>${next.time}에 드세요</small></div><button class="btn sm" data-a="take" data-id="${next.id}">먹었어요</button></div>`:'<div class="done">오늘 약을 모두 드셨어요 👍</div>'}</div>
+  <div class="card"><h3>오늘 기분은 어떠세요?</h3><div class="moods">${MOODS.map(m=>`<button data-a="mood" data-v="${m[2]}" class="${lastMood&&lastMood.v===m[2]?'on':''}"><span>${m[0]}</span>${m[1]}</button>`).join('')}</div></div>
+  <div class="grid"><button class="big" data-a="go" data-r="s.chat"><span>💬</span>말 걸기</button><button class="big" data-a="go" data-r="s.meds"><span>💊</span>약 확인</button><button class="big" data-a="family" style="grid-column:1/-1;flex-direction:row;justify-content:center;gap:12px;padding:16px"><span>📞</span>가족에게 전화</button></div>
+  <div class="card"><h3>오늘의 건강 한마디</h3><p style="margin:0">${TIPS[new Date().getDate()%TIPS.length]}</p></div>
+  <button class="btn sos sos-fab" data-a="sos">🚨 도와주세요</button>`;
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(x=>x.classList.remove('open'))})
+function Chat(){
+  const S=Store.s;
+  if(!S.chat.length)S.chat.push({r:'a',t:`${S.seniorName}, 안녕하세요. 오늘 하루는 어떠세요?`,ts:Date.now()});
+  return`<div id="log">${S.chat.map(m=>`<div class="msg ${m.r}">${esc(m.t)}</div>`).join('')}</div>
+  <div class="bar"><button class="mic ${UI.rec?'rec':''}" data-a="mic" aria-label="음성으로 말하기">🎤</button><input id="inp" placeholder="말씀해 보세요" autocomplete="off"><button data-a="send">보내기</button></div>`;
+}
+function Meds(){
+  const S=Store.s,t=todayTaken();
+  return`<div class="card"><h3>오늘 먹을 약</h3>${S.meds.length?S.meds.slice().sort((a,b)=>a.time.localeCompare(b.time)).map(m=>`<div class="row"><div><b>${esc(m.name)}</b><small>${m.time}</small></div>${t[m.id]?`<span class="done">✔ ${t[m.id]}에 드셨어요</span>`:`<button class="btn sm" data-a="take" data-id="${m.id}">먹었어요</button>`}</div>`).join(''):'<div class="note">등록된 약이 없어요. 보호자 모드의 설정에서 추가하세요.</div>'}</div>`;
+}
+function Dash(){
+  const S=Store.s,t=todayTaken(),total=S.meds.length,took=S.meds.filter(m=>t[m.id]).length,ms=todayMoods(),lm=ms.slice(-1)[0];
+  const moodLabel=lm?MOODS.find(m=>m[2]===lm.v)[1]:'기록 없음';
+  const talks=S.chat.filter(m=>m.r==='u'&&m.ts>new Date().setHours(0,0,0,0)).length;
+  const hrs=(Date.now()-S.lastActive)/36e5,quiet=hrs>=S.inactiveHours;
+  const summary=`오늘 ${esc(S.seniorName)}은(는) 약 ${total}개 중 ${took}개를 드셨고, 기분은 "${moodLabel}"이었어요. 대화는 ${talks}번 했어요.${quiet?` 마지막 활동이 ${ago(S.lastActive)}이라 확인이 필요해요.`:''}`;
+  return`<div class="card"><h3>오늘의 요약</h3><p style="margin:0">${summary}</p></div>
+  <div class="stat"><div><b>${took}/${total}</b><small>복약</small></div><div><b>${lm?MOODS.find(m=>m[2]===lm.v)[0]:'–'}</b><small>기분</small></div><div><b style="color:${quiet?'var(--sos)':'var(--ok)'}">${ago(S.lastActive)}</b><small>마지막 활동</small></div></div>
+  <div class="card"><h3>최근 7일 복약률</h3><div class="bars">${weekRates().map(w=>`<div><i style="height:calc((100% - 22px)*${w[1]/100})"></i><small>${w[0]}</small></div>`).join('')}</div></div>
+  <div class="card"><h3>알림 ${S.alerts.some(a=>!a.read)?`<button class="btn alt sm" style="float:right" data-a="readall">모두 읽음</button>`:''}</h3>${S.alerts.length?S.alerts.slice(0,15).map(a=>`<div class="alert ${a.type} ${a.read?'read':''}">${esc(a.text)}<small>${ago(a.ts)}</small></div>`).join(''):'<div class="note">아직 알림이 없어요.</div>'}</div>
+  <div class="card"><h3>최근 대화</h3>${S.chat.slice(-6).map(m=>`<div class="row"><div><small>${m.r==='u'?esc(S.seniorName):'AI'} · ${hm(m.ts)}</small>${esc(m.t)}</div></div>`).join('')||'<div class="note">대화 기록이 없어요.</div>'}<p class="note">어르신께 대화 내용 공유에 대한 동의를 먼저 받으세요.</p></div>`;
+}
+function Settings(){
+  const S=Store.s;
+  return`<div class="card"><h3>어르신 정보</h3>
+  <label for="f-name">호칭</label><input class="f" id="f-name" value="${esc(S.seniorName)}">
+  <label for="f-phone">보호자 전화번호 (긴급 연결용)</label><input class="f" id="f-phone" type="tel" value="${esc(S.guardianPhone)}" placeholder="010-0000-0000">
+  <label for="f-in">몇 시간 동안 활동이 없으면 알릴까요?</label><select class="f" id="f-in">${[2,4,6,12,24].map(h=>`<option value="${h}" ${S.inactiveHours===h?'selected':''}>${h}시간</option>`).join('')}</select>
+  <label><input type="checkbox" id="f-tts" ${S.tts?'checked':''}> AI 답변을 소리로 읽어 주기</label>
+  <button class="btn sm" style="margin-top:12px" data-a="saveset">저장</button></div>
+  <div class="card"><h3>약 일정</h3>${S.meds.map(m=>`<div class="row"><div><b>${esc(m.name)}</b><small>${m.time}</small></div><button class="btn alt sm" data-a="delmed" data-id="${m.id}">삭제</button></div>`).join('')}
+  <label for="m-name">약 이름</label><input class="f" id="m-name"><label for="m-time">시간</label><input class="f" id="m-time" type="time" value="09:00">
+  <button class="btn sm" style="margin-top:12px" data-a="addmed">약 추가</button></div>
+  <div class="card"><h3>데모 시나리오</h3><p class="note" style="margin-top:0">시연용 버튼이에요. 누르면 보호자 현황에 알림이 생겨요.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn alt sm" data-a="demoEmerg">낙상 감지 알림</button><button class="btn alt sm" data-a="demoMed">복약 지연 알림</button></div></div>
+  <button class="btn alt" data-a="reset">모든 기록 지우기</button>`;
+}
+/* ---------- 납품용 설정 & 예시 데이터 (전부 교체 대상) ---------- */
+const BRAND={name:'곁에',tagline:'AI 노인 돌봄 플랫폼',org:'○○ 복지재단'}; // 납품 시 이 값만 바꾸면 브랜드 교체
+const TIPS=['하루 8잔, 물을 조금씩 자주 드세요.','식사 후 10분 걷기는 혈당 관리에 도움이 돼요.','약은 정해진 시간에 드시는 게 가장 좋아요.','낮에 햇볕을 20분 쬐면 밤잠에 좋아요.'];
+const DEMO=[ // 예시 어르신 8명. 실제로는 서버 API(GET /seniors)로 교체
+  {id:1,name:'김순자',age:82,area:'노원구',med:96,mood:3,last:12,guard:'김민수 (아들)'},
+  {id:2,name:'이영철',age:78,area:'은평구',med:88,mood:2,last:35,guard:'이지은 (딸)'},
+  {id:3,name:'박옥분',age:85,area:'강북구',med:64,mood:1,last:410,guard:'박성호 (아들)'},
+  {id:4,name:'최만수',age:80,area:'도봉구',med:100,mood:3,last:5,guard:'최유리 (딸)'},
+  {id:5,name:'정말순',age:88,area:'노원구',med:72,mood:0,last:95,guard:'정태영 (손자)'},
+  {id:6,name:'강복례',age:76,area:'성북구',med:92,mood:2,last:58,guard:'강민지 (딸)'},
+  {id:7,name:'오기남',age:84,area:'중랑구',med:45,mood:0,last:780,guard:'오세훈 (아들)'},
+  {id:8,name:'한정순',age:79,area:'은평구',med:98,mood:3,last:20,guard:'한도윤 (아들)'}
+];
+const stOf=d=>d.last>=360||d.med<50?'urgent':(d.last>=90||d.med<80||d.mood===0)?'warn':'ok';
+const ST={ok:['정상','var(--ok)','#fff'],warn:['주의','var(--amber)','#3b2a00'],urgent:['긴급','var(--sos)','#fff']};
+const minsAgo=m=>m<60?m+'분 전':Math.floor(m/60)+'시간 전';
+
+/* ---------- 관리자(기관) 화면 ---------- */
+function ADash(){
+  const c={ok:0,warn:0,urgent:0};DEMO.forEach(d=>c[stOf(d)]++);
+  const ord=['urgent','warn','ok'];
+  const list=DEMO.filter(d=>UI.flt==='all'||stOf(d)===UI.flt).sort((a,b)=>ord.indexOf(stOf(a))-ord.indexOf(stOf(b)));
+  return`<div class="card"><h3>${BRAND.org} 관리 현황</h3><div class="stat">${ord.slice().reverse().map(k=>`<div><b style="color:${ST[k][1]}">${c[k]}</b><small>${ST[k][0]}</small></div>`).join('')}</div></div>
+  <div class="chips">${[['all','전체'],['urgent','긴급'],['warn','주의'],['ok','정상']].map(f=>`<button class="${UI.flt===f[0]?'on':''}" data-a="flt" data-f="${f[0]}">${f[1]}</button>`).join('')}</div>
+  <div class="card">${list.map(d=>`<button class="lrow" data-a="open" data-id="${d.id}"><span class="dot" style="background:${ST[stOf(d)][1]}"></span><span class="grow"><b>${d.name}</b> <small style="display:inline">${d.age}세 · ${d.area}</small><small>복약 ${d.med}% · 마지막 활동 ${minsAgo(d.last)}</small></span><span class="chev">›</span></button>`).join('')||'<div class="note">해당하는 어르신이 없어요.</div>'}</div>
+  <p class="note">화면의 모든 데이터는 예시예요.</p>`;
+}
+function ADetail(){
+  const d=DEMO.find(x=>x.id===UI.sel)||DEMO[0],s=stOf(d);
+  const wk=['월','화','수','목','금','토','일'].map((w,i)=>[w,Math.max(20,Math.min(100,d.med+[4,-6,8,-10,2,-4,0][i]))]);
+  return`<div><button class="btn alt sm" data-a="go" data-r="a.dash">‹ 목록</button></div>
+  <div class="card"><h3>${d.name} (${d.age}세)</h3><span class="chip" style="background:${ST[s][1]};color:${ST[s][2]}">${ST[s][0]}</span><p class="note" style="margin:8px 0 0">${d.area} · 보호자 ${d.guard}</p></div>
+  <div class="stat"><div><b>${d.med}%</b><small>복약률</small></div><div><b>${MOODS.find(m=>m[2]===d.mood)[0]}</b><small>오늘 기분</small></div><div><b style="font-size:17px">${minsAgo(d.last)}</b><small>마지막 활동</small></div></div>
+  <div class="card"><h3>최근 7일 복약률</h3><div class="bars">${wk.map(w=>`<div><i style="height:calc((100% - 22px)*${w[1]/100})"></i><small>${w[0]}</small></div>`).join('')}</div></div>
+  <div class="card"><h3>담당자 메모</h3><p style="margin:0;font-size:16px">최근 식사량이 줄었다는 보호자 문의가 있어 방문 상담을 권장해요. (예시)</p></div>
+  <div class="grid"><button class="btn alt" data-a="demo" data-m="보호자 연락">📞 보호자 연락</button><button class="btn" data-a="demo" data-m="방문 일정 등록">📅 방문 예약</button></div>`;
+}
+function AReport(){
+  const avg=Math.round(DEMO.reduce((a,d)=>a+d.med,0)/DEMO.length),wk=[78,82,85,avg];
+  return`<div class="card"><h3>월간 리포트</h3><div class="stat"><div><b>${DEMO.length}</b><small>관리 인원</small></div><div><b>${avg}%</b><small>평균 복약률</small></div><div><b>14</b><small>긴급 알림</small></div></div></div>
+  <div class="card"><h3>주차별 평균 복약률</h3><div class="bars">${wk.map((v,i)=>`<div><i style="height:calc((100% - 22px)*${v/100})"></i><small>${i+1}주</small></div>`).join('')}</div></div>
+  <button class="btn" data-a="csv">CSV로 내보내기</button><button class="btn alt" data-a="demo" data-m="PDF 리포트 생성">PDF 리포트</button><p class="note">모든 수치는 예시예요.</p>`;
+}
+const ROUTES={'s.home':Home,'s.chat':Chat,'s.meds':Meds,'g.dash':Dash,'g.set':Settings,'a.dash':ADash,'a.detail':ADetail,'a.report':AReport};
+
+function render(){
+  const S=Store.s,sen=UI.route.startsWith('s.'),unread=S.alerts.filter(a=>!a.read).length;
+  const keep=$('#inp')?$('#inp').value:'';
+  const adm=UI.route.startsWith('a.');
+  const nav=sen?[['s.home','🏠','홈'],['s.chat','💬','대화'],['s.meds','💊','약']]:adm?[['a.dash','🏢','현황'],['a.report','📊','리포트']]:[['g.dash','📋','현황'],['g.set','⚙️','설정']];
+  $('#app').innerHTML=`<header><b>${BRAND.name}</b><div class="seg"><button class="${sen?'on':''}" data-a="go" data-r="s.home">어르신</button><button class="${!sen&&!adm?'on':''}" data-a="go" data-r="g.dash">보호자${unread?`<span class="badge">${unread}</span>`:''}</button><button class="${adm?'on':''}" data-a="go" data-r="a.dash">관리자</button></div></header>
+  <main>${UI.banner&&sen?`<div class="banner"><span>${esc(UI.banner)}</span><button data-a="go" data-r="s.meds">확인</button></div>`:''}${ROUTES[UI.route]()}</main>
+  <nav>${nav.map(n=>`<button class="${UI.route===n[0]?'on':''}" data-a="go" data-r="${n[0]}"><span>${n[1]}</span>${n[2]}</button>`).join('')}</nav>${UI.sheet}`;
+  const inp=$('#inp');if(inp)inp.value=keep;
+  const log=$('#log');if(log)log.scrollTop=log.scrollHeight;
+}
+
+function dkey(t){const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function weekRates(){ // 최근 7일 복약률 [요일, %]
+  const S=Store.s;
+  return[6,5,4,3,2,1,0].map(i=>{const t=Date.now()-i*864e5,k=dkey(t),n=S.meds.length;
+    return['일월화수목금토'[new Date(k+'T12:00:00').getDay()],n?Math.round(S.meds.filter(m=>(S.taken[k]||{})[m.id]).length/n*100):0]});
+}
+/* ---------- Actions ---------- */
+async function send(text){
+  text=(text||'').trim();if(!text)return;
+  const S=Store.s;touch();
+  S.chat.push({r:'u',t:text,ts:Date.now()});
+  if(AI.isEmergency(text)){Alerts.push('emergency',`${S.seniorName}이(가) 이렇게 말했어요: "${text}"`);UI.sheet=sosSheet()}
+  const r=await AI.reply(text);
+  S.chat.push({r:'a',t:r,ts:Date.now()});Store.save();
+  Voice.speak(r);render();const i=$('#inp');if(i)i.focus();
+}
+function sosSheet(){
+  const p=Store.s.guardianPhone.replace(/[^0-9+]/g,'');
+  return`<div class="sheet"><div class="box"><h2>🚨 보호자에게 알렸어요</h2><p style="margin:0">위급하면 바로 전화하세요.</p>
+  <a class="btn sos" href="tel:119">119에 전화</a>
+  ${p?`<a class="btn" href="tel:${p}">보호자에게 전화</a>`:'<p class="note">보호자 전화번호가 없어요. 보호자 모드의 설정에서 입력하세요.</p>'}
+  <button class="btn alt" data-a="close">괜찮아요</button></div></div>`;
+}
+const Actions={
+  go:d=>{UI.route=d.r;touch()},
+  take:d=>{const k=ld(),S=Store.s,m=S.meds.find(x=>x.id==d.id);(S.taken[k]=S.taken[k]||{})[d.id]=hm(Date.now());UI.banner='';touch();Voice.speak(m.name+' 드셨군요. 잘하셨어요.')},
+  mood:d=>{const k=ld(),S=Store.s,v=+d.v;(S.moods[k]=S.moods[k]||[]).push({t:Date.now(),v});touch();if(v===0)Alerts.push('mood',`${S.seniorName}이(가) 오늘 기분이 안 좋다고 했어요.`)},
+  send:()=>{const i=$('#inp');send(i&&i.value);if(i)i.value=''},
+  mic:()=>{
+    if(UI.rec)return;
+    UI.rec=Voice.listen(t=>send(t),()=>{UI.rec=false;render()});
+    if(!UI.rec)alert('이 브라우저는 음성 입력을 지원하지 않아요. 글자로 입력해 주세요.');
+  },
+  sos:()=>{const S=Store.s;touch();Alerts.push('emergency',`${S.seniorName}이(가) 도움 버튼을 눌렀어요.`);UI.sheet=sosSheet()},
+  close:()=>{UI.sheet=''},
+  flt:d=>{UI.flt=d.f},
+  open:d=>{UI.sel=+d.id;UI.route='a.detail'},
+  demo:d=>{UI.sheet=`<div class="sheet"><div class="box"><h2>${esc(d.m)}</h2><p style="margin:0">데모 버전에서는 실제로 실행되지 않는 예시 기능이에요.</p><button class="btn alt" data-a="close">확인</button></div></div>`},
+  csv:()=>{
+    const rows=[['이름','나이','지역','복약률(%)','마지막 활동(분 전)','상태','보호자']].concat(DEMO.map(d=>[d.name,d.age,d.area,d.med,d.last,ST[stOf(d)][0],d.guard]));
+    const blob=new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='seniors.csv';a.click();
+  },
+  demoEmerg:()=>{Alerts.push('emergency','낙상이 감지됐어요. 즉시 확인이 필요해요. (시나리오 예시)');UI.route='g.dash'},
+  demoMed:()=>{Alerts.push('med','약 복용 확인이 1시간 넘게 지연되고 있어요. (시나리오 예시)');UI.route='g.dash'},
+  readall:()=>{Store.s.alerts.forEach(a=>a.read=true)},
+  saveset:()=>{const S=Store.s;S.seniorName=$('#f-name').value.trim()||'어르신';S.guardianPhone=$('#f-phone').value.trim();S.inactiveHours=+$('#f-in').value;S.tts=$('#f-tts').checked},
+  addmed:()=>{const n=$('#m-name').value.trim(),t=$('#m-time').value;if(!n||!t)return;Store.s.meds.push({id:Date.now(),name:n,time:t})},
+  delmed:d=>{Store.s.meds=Store.s.meds.filter(m=>m.id!=d.id)},
+  reset:()=>{if(confirm('모든 기록과 설정을 지울까요?')){localStorage.removeItem(Store.key);Store.load();UI.route='s.home'}}
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  Actions[b.dataset.a](b.dataset);Store.save();render();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='inp')Actions.send()});
+
+/* ---------- Tick: 복약 알림 + 무응답 감지 (30초마다) ---------- */
+function tick(){
+  const S=Store.s,d=ld(),now=new Date(),cur=now.getHours()*60+now.getMinutes(),t=todayTaken();let changed=false;
+  S.meds.forEach(m=>{
+    if(t[m.id])return;
+    const late=cur-(+m.time.slice(0,2)*60+ +m.time.slice(3,5)),k=d+m.id;
+    if(late>=0&&!S.flags[k+'a']){S.flags[k+'a']=1;UI.banner=`${m.name} 드실 시간이에요`;Voice.speak(`${S.seniorName}, ${m.name} 드실 시간이에요.`);changed=true}
+    if(late>=60&&!S.flags[k+'b']){S.flags[k+'b']=1;Alerts.push('med',`${m.name}을(를) ${m.time}에 드셔야 하는데 아직 확인이 안 됐어요.`);changed=true}
+  });
+  // 브라우저는 앱이 열려 있을 때만 동작. 실제 앱에서는 서버가 마지막 활동 시각을 보고 판단해야 함.
+  if((Date.now()-S.lastActive)/36e5>=S.inactiveHours&&!S.flags['in'+S.lastActive]){
+    S.flags['in'+S.lastActive]=1;Alerts.push('inactive',`${S.inactiveHours}시간 넘게 활동이 없어요. 안부를 확인해 보세요.`);changed=true;
+  }
+  if(changed){Store.save();render()}
+}
+
+document.title=BRAND.name+' – '+BRAND.tagline;
+Store.load();render();tick();setInterval(tick,30000);
 </script>
 </body>
 </html>
